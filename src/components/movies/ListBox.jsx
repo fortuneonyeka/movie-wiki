@@ -4,14 +4,14 @@ import "./movies.css";
 import Movie from "./Movie";
 
 const ListBox = ({ movies }) => {
-  const [isOpen1, setIsOpen1] = useState(true);
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <div className="box">
-      <Button onClick={() => setIsOpen1((open) => !open)}>
-        {isOpen1 ? "–" : "+"}
+      <Button onClick={() => setIsOpen((open) => !open)}>
+        {isOpen ? "–" : "+"}
       </Button>
-      {isOpen1 && (
+      {isOpen && (
         <ul className="list">
           {movies?.map((movie) => (
             <Movie movie={movie} key={movie.imdbID}/>
