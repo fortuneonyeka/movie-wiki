@@ -4,6 +4,7 @@ import Main from "./components/main/Main";
 import NumResult from "./components/navigation/NumResult";
 import ListBox from "./components/movies/ListBox";
 import Search from "./components/navigation/Search";
+import { MovieProvider } from "./MovieContext";
 
 const APIKEY = "339d5330";
 
@@ -11,10 +12,9 @@ export default function App() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("fast and furious");
 
   const fetchMovies = async (abortController) => {
-    // Clear previous error and movies when a new query is submitted
     setError(null);
     setMovies([]);
     setLoading(true);
@@ -22,7 +22,7 @@ export default function App() {
     try {
       const res = await fetch(
         `http://www.omdbapi.com/?apikey=${APIKEY}&s=${query}`,
-        { signal: abortController.signal } // Attach the abort signal to the fetch request
+        { signal: abortController.signal }
       );
 
       if (!res.ok) {
@@ -38,7 +38,6 @@ export default function App() {
       setMovies(data.Search);
     } catch (error) {
       if (error.name !== "AbortError") {
-        // Only set the error if it's not an abort error
         setError(error.message);
       }
     } finally {
@@ -47,25 +46,23 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (!query.length) {
-      // Clear error and movies if the query is cleared
+    if (query.length < 3) {
       setError(null);
       setMovies([]);
       setLoading(false);
       return;
     }
 
-    const abortController = new AbortController(); // Create a new AbortController
-    fetchMovies(abortController); 
+    const abortController = new AbortController();
+    fetchMovies(abortController);
 
-    // Cleanup: abort the request if the query changes or component unmounts
     return () => {
-      abortController.abort(); // Abort the fetch request
+      abortController.abort();
     };
-  }, [query]); 
+  }, [query]);
 
   return (
-    <>
+    <MovieProvider>
       <NavBar>
         <Search query={query} setQuery={setQuery} />
         <NumResult movies={movies} />
@@ -73,6 +70,6 @@ export default function App() {
       <Main>
         <ListBox movies={movies} loading={loading} error={error} />
       </Main>
-    </>
+    </MovieProvider>
   );
 }

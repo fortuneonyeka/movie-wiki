@@ -140,7 +140,7 @@ body {
 .btn-back {
   position: absolute;
   top: 0.6rem;
-  left: 0.6rem;
+  right: 6rem;
   height: 3.2rem;
   aspect-ratio: 1;
   border-radius: 50%;
@@ -158,6 +158,10 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+/* .details-img-cont {
+  display: flex;
+} */
 
 .spinner {
   display: inline-block;
