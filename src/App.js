@@ -1,18 +1,75 @@
-import { useState } from "react";
-import { tempMovieData, tempWatchedData } from "./data";
+import React, { useEffect, useState } from "react";
 import NavBar from "./components/navigation/NavBar";
 import Main from "./components/main/Main";
+import NumResult from "./components/navigation/NumResult";
+import ListBox from "./components/movies/ListBox";
+import Search from "./components/navigation/Search";
+import { MovieProvider } from "./MovieContext";
 
-
-
+const APIKEY = "339d5330";
 
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [query, setQuery] = useState("fast and furious");
+
+  const fetchMovies = async (abortController) => {
+    setError(null);
+    setMovies([]);
+    setLoading(true);
+
+    try {
+      const res = await fetch(
+        `http://www.omdbapi.com/?apikey=${APIKEY}&s=${query}`,
+        { signal: abortController.signal }
+      );
+
+      if (!res.ok) {
+        throw new Error(`Failed to fetch movies: ${res.statusText}`);
+      }
+
+      const data = await res.json();
+
+      if (!data.Search) {
+        throw new Error("No movies found.");
+      }
+
+      setMovies(data.Search);
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        setError(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (query.length < 3) {
+      setError(null);
+      setMovies([]);
+      setLoading(false);
+      return;
+    }
+
+    const abortController = new AbortController();
+    fetchMovies(abortController);
+
+    return () => {
+      abortController.abort();
+    };
+  }, [query]);
 
   return (
-    <>
-      <NavBar movies={movies} />
-    <Main movies={movies}/>
-    </>
+    <MovieProvider>
+      <NavBar>
+        <Search query={query} setQuery={setQuery} />
+        <NumResult movies={movies} />
+      </NavBar>
+      <Main>
+        <ListBox movies={movies} loading={loading} error={error} />
+      </Main>
+    </MovieProvider>
   );
 }
