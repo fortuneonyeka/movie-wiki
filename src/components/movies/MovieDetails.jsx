@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useMovieContext } from "../../MovieContext";
 import Button from "../button/Button";
+import StarRating from "../StarRating";
+import Loader from "../Loader";
 
 const APIKEY = "339d5330";
 
 const MovieDetails = () => {
   const { selectedId, setSelectedId } = useMovieContext(); // Access selectedId and setSelectedId from context
-  const [movieDetails, setMovieDetails] = useState(null);
+  const [movieDetails, setMovieDetails] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -43,41 +45,62 @@ const MovieDetails = () => {
     fetchMovieDetails();
   }, [selectedId]);
 
-  if (loading) return <p>Loading movie details...</p>;
-  if (error) return <p style={{ color: "red" }}>⛔ {error}</p>;
   if (!movieDetails) return null;
 
   return (
     <div className="details">
-      <div className="details-overview">
-        <button onClick={() => setSelectedId(null)} className="btn-back">
-          ⬅
-        </button>
-        <img src={movieDetails.Poster} alt={`${movieDetails.Title} poster`} />
-
-        <h2>{movieDetails.Title}</h2>
-        <p>
-          <strong>Year:</strong> {movieDetails.Year}
-        </p>
-        <p>
-          <strong>Genre:</strong> {movieDetails.Genre}
-        </p>
-        <p>
-          <strong>Director:</strong> {movieDetails.Director}
-        </p>
-        <p>
-          <strong>Actors:</strong> {movieDetails.Actors}
-        </p>
-        <p>
-          <strong>Description:</strong> {movieDetails.Plot}
-        </p>
-        <p>
-          <strong>IMDb Rating:</strong> {movieDetails.imdbRating}
-        </p>
-        <p>
-          <strong>Runtime:</strong> {movieDetails.Runtime}
-        </p>
-      </div>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <p style={{ color: "red" }}>⛔ {error}</p>
+      ) : (
+        <>
+          <header>
+            <div className="details-overview">
+              <button onClick={() => setSelectedId(null)} className="btn-back">
+                ⬅
+              </button>
+              <img
+                src={movieDetails.Poster}
+                alt={`${movieDetails.Title} poster`}
+                style={{ width: "100%", paddingTop: "20px" }}
+              />
+              <h2>{movieDetails.Title}</h2>
+              <p>
+                <strong>Released Date:</strong> {movieDetails.Released}
+              </p>
+              <p>
+                <strong>Genre:</strong> {movieDetails.Genre}
+              </p>
+            </div>
+          </header>
+          <section>
+            <p>
+              <strong>Directed by:</strong> {movieDetails.Director}
+            </p>
+            <p>
+              <strong>Actors:</strong>
+              <em> {movieDetails.Actors}</em>
+            </p>
+            <p>
+              <strong>Description:</strong>
+              <em> {movieDetails.Plot}</em>
+            </p>
+          </section>
+          <div className="rating">
+            <StarRating maxRating={10} size={24} />
+          </div>
+          <p>
+            <strong>
+              <span>⭐️</span> imdbRating:
+            </strong>{" "}
+            {movieDetails.imdbRating}
+          </p>
+          <p>
+            <strong>Runtime:</strong> {movieDetails.Runtime}
+          </p>
+        </>
+      )}
     </div>
   );
 };
