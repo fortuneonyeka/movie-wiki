@@ -9,9 +9,10 @@ export const useMovieContext = () => useContext(MovieContext);
 // Provider component
 export const MovieProvider = ({ children }) => {
   const [selectedId, setSelectedId] = useState(null);
+  const [movies, setMovies] = useState([]);
 
   return (
-    <MovieContext.Provider value={{ selectedId, setSelectedId }}>
+    <MovieContext.Provider value={{ selectedId, setSelectedId, movies, setMovies }}>
       {children}
     </MovieContext.Provider>
   );

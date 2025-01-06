@@ -4,12 +4,12 @@ import Main from "./components/main/Main";
 import NumResult from "./components/navigation/NumResult";
 import ListBox from "./components/movies/ListBox";
 import Search from "./components/navigation/Search";
-import { MovieProvider } from "./MovieContext";
+import { MovieProvider, useMovieContext } from "./MovieContext";
 
 const APIKEY = "339d5330";
 
-export default function App() {
-  const [movies, setMovies] = useState([]);
+const AppContent = () => {
+  const { movies, setMovies } = useMovieContext(); // Use context for movies
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("fast and furious");
@@ -59,10 +59,10 @@ export default function App() {
     return () => {
       abortController.abort();
     };
-  }, [query]);
+  }, [query, setMovies]);
 
   return (
-    <MovieProvider>
+    <>
       <NavBar>
         <Search query={query} setQuery={setQuery} />
         <NumResult movies={movies} />
@@ -70,6 +70,14 @@ export default function App() {
       <Main>
         <ListBox movies={movies} loading={loading} error={error} />
       </Main>
+    </>
+  );
+};
+
+export default function App() {
+  return (
+    <MovieProvider>
+      <AppContent />
     </MovieProvider>
   );
 }

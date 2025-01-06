@@ -2,7 +2,7 @@ import React from "react";
 import { useMovieContext } from "../../MovieContext";
 
 const Movie = ({ movie }) => {
-  const {selectedId, setSelectedId } = useMovieContext(); // Access setSelectedId from context
+  const {setSelectedId } = useMovieContext(); // Access setSelectedId from context
 
   const handleSelected =(id) => {
     setSelectedId(selectedId => id === selectedId ? null:id)

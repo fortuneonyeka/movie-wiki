@@ -6,7 +6,7 @@ import Loader from "../Loader";
 
 const APIKEY = "339d5330";
 
-const MovieDetails = () => {
+const MovieDetails = ({ handleWatched }) => {
   const { selectedId, setSelectedId } = useMovieContext(); // Access selectedId and setSelectedId from context
   const [movieDetails, setMovieDetails] = useState({});
   const [loading, setLoading] = useState(false);
@@ -47,6 +47,30 @@ const MovieDetails = () => {
 
   if (!movieDetails) return null;
 
+
+  const onWatched = () => {
+    const rating = movieDetails.imdbRating
+      ? Math.round(Number(movieDetails.imdbRating)) // Round rating to a whole number
+      : 0;
+  
+    const runtime = movieDetails.Runtime
+      ? Math.round(Number(movieDetails.Runtime.split(" ")[0]) || 0) // Extract and round runtime to a whole number
+      : 0;
+  
+    const newWatchedMovie = {
+      imdbID: selectedId,
+      Title: movieDetails.Title || "Unknown Title",
+      year: movieDetails.Year || "Unknown Year",
+      rating, // Rounded rating
+      Poster: movieDetails.Poster !== "N/A" ? movieDetails.Poster : "/fallback-image.jpg",
+      runtime, // Rounded runtime
+    };
+  
+    handleWatched(newWatchedMovie);
+  };
+  
+  
+
   return (
     <div className="details">
       {loading ? (
@@ -57,34 +81,40 @@ const MovieDetails = () => {
         <>
           <header>
             <div className="details-overview">
-              <button onClick={() => setSelectedId(null)} className="btn-back">
-                ⬅
-              </button>
+              <div className="btns">
+                <Button onClick={onWatched} className="btn-add">
+                  Add to watched
+                </Button>
+
+                <Button onClick={() => setSelectedId(null)} className="btn-back">
+                  ⬅
+                </Button>
+              </div>
               <img
-                src={movieDetails.Poster}
-                alt={`${movieDetails.Title} poster`}
+                src={movieDetails.Poster !== "N/A" ? movieDetails.Poster : "/fallback-image.jpg"}
+                alt={`${movieDetails.Title || "Movie"} poster`}
                 style={{ width: "100%", paddingTop: "20px" }}
               />
-              <h2>{movieDetails.Title}</h2>
+              <h2>{movieDetails.Title || "Unknown Title"}</h2>
               <p>
-                <strong>Released Date:</strong> {movieDetails.Released}
+                <strong>Released Date:</strong> {movieDetails.Released || "Unknown"}
               </p>
               <p>
-                <strong>Genre:</strong> {movieDetails.Genre}
+                <strong>Genre:</strong> {movieDetails.Genre || "Unknown"}
               </p>
             </div>
           </header>
           <section>
             <p>
-              <strong>Directed by:</strong> {movieDetails.Director}
+              <strong>Directed by:</strong> {movieDetails.Director || "Unknown"}
             </p>
             <p>
               <strong>Actors:</strong>
-              <em> {movieDetails.Actors}</em>
+              <em> {movieDetails.Actors || "Unknown"}</em>
             </p>
             <p>
               <strong>Description:</strong>
-              <em> {movieDetails.Plot}</em>
+              <em> {movieDetails.Plot || "No description available."}</em>
             </p>
           </section>
           <div className="rating">
@@ -94,10 +124,11 @@ const MovieDetails = () => {
             <strong>
               <span>⭐️</span> imdbRating:
             </strong>{" "}
-            {movieDetails.imdbRating}
+            {movieDetails.imdbRating || "N/A"}
           </p>
+
           <p>
-            <strong>Runtime:</strong> {movieDetails.Runtime}
+            <strong>Runtime:</strong> {movieDetails.Runtime || "Unknown"}
           </p>
         </>
       )}
