@@ -1,9 +1,9 @@
 import React from "react";
-import "./button.css"
+import "./button.css";
 
-const Button = ({ onClick, children }) => {
+const Button = ({ onClick, children, className }) => {
   return (
-    <button className="btn-toggle" onClick={onClick}>
+    <button className={`btn ${className}`} onClick={onClick}>
       {children}
     </button>
   );

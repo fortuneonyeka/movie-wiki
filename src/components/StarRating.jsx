@@ -1,6 +1,6 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import Star from "./Star";
-import PropTypes from "prop-types"
 
 const containerStyle = {
   display: "flex",
@@ -11,28 +11,29 @@ const containerStyle = {
 const starContainerStyle = {
   display: "flex",
 };
- 
+
 const StarRating = ({
   maxRating = 5,
-  color = ["#8B0000", "#DC143C", "#89CFF0", "#0000FF", "#FFD700"],
+  color = ["white", "#DC143C", "#89CFF0", "#0000FF", "#FFD700"],
   size = 25,
   className,
   messages = [],
-  defaultRating = 0
+  defaultRating = 0,
 }) => {
   const [rating, setRating] = useState(defaultRating);
   const [tempRating, setTempRating] = useState(0);
 
+  // Calculate the color dynamically based on the rating
+  const getDynamicColor = (ratingValue) => {
+    const colorIndex = Math.floor((ratingValue / maxRating) * (color.length - 1));
+    return color[colorIndex] || color[color.length - 1];
+  };
+
   const textStyle = {
     lineHeight: "1",
     margin: "0",
-    color: color[tempRating ? tempRating - 1 : rating - 1] || color[0],
+    color: getDynamicColor(tempRating || rating),
     fontSize: `${size}px`,
-  };
-
-  // Helper function to get the star color
-  const getStarColor = (index) => {
-    return color[tempRating ? tempRating - 1 : rating - 1] || color[0];
   };
 
   return (
@@ -45,7 +46,7 @@ const StarRating = ({
             full={tempRating ? tempRating >= i + 1 : rating >= i + 1}
             onHoverIn={() => setTempRating(i + 1)}
             onHoverOut={() => setTempRating(0)}
-            color={getStarColor(i)} // Dynamic star color
+            color={getDynamicColor(tempRating || rating)}
             size={size}
           />
         ))}
@@ -60,14 +61,13 @@ const StarRating = ({
   );
 };
 
-StarRating.prototype = {
+StarRating.propTypes = {
   maxRating: PropTypes.number,
-  color: PropTypes.string,
+  color: PropTypes.arrayOf(PropTypes.string),
   size: PropTypes.number,
   className: PropTypes.string,
   messages: PropTypes.arrayOf(PropTypes.string),
   defaultRating: PropTypes.number,
-  tempRating: PropTypes.number
- }
+};
 
 export default StarRating;
