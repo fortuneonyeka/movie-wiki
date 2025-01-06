@@ -12,7 +12,7 @@ const average = (arr) =>
 const Main = ({ children}) => {
   const { selectedId } = useMovieContext(); // Access selectedId from context
 
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [watched, setWatched] = useState([]);
   const avgImdbRating = average(watched.map((movie) => movie.imdbRating));
   const avgUserRating = average(watched.map((movie) => movie.userRating));
   const avgRuntime = average(watched.map((movie) => movie.runtime));
