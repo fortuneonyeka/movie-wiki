@@ -45,31 +45,32 @@ const MovieDetails = ({ handleWatched }) => {
     fetchMovieDetails();
   }, [selectedId]);
 
+
+
   if (!movieDetails) return null;
 
 
+
+  const handleCloseMovie = () => {
+    setSelectedId(null)
+  }
+
   const onWatched = () => {
-    const rating = movieDetails.imdbRating
-      ? Math.round(Number(movieDetails.imdbRating)) // Round rating to a whole number
-      : 0;
-  
-    const runtime = movieDetails.Runtime
-      ? Math.round(Number(movieDetails.Runtime.split(" ")[0]) || 0) // Extract and round runtime to a whole number
-      : 0;
-  
     const newWatchedMovie = {
       imdbID: selectedId,
       Title: movieDetails.Title || "Unknown Title",
       year: movieDetails.Year || "Unknown Year",
-      rating, // Rounded rating
-      Poster: movieDetails.Poster !== "N/A" ? movieDetails.Poster : "/fallback-image.jpg",
-      runtime, // Rounded runtime
+      imdbRating: movieDetails.imdbRating,
+      Poster:
+        movieDetails.Poster !== "N/A"
+          ? movieDetails.Poster
+          : "/fallback-image.jpg",
+      runtime: movieDetails.Runtime,
     };
-  
+
     handleWatched(newWatchedMovie);
+    handleCloseMovie()
   };
-  
-  
 
   return (
     <div className="details">
@@ -86,18 +87,25 @@ const MovieDetails = ({ handleWatched }) => {
                   Add to watched
                 </Button>
 
-                <Button onClick={() => setSelectedId(null)} className="btn-back">
+                <Button
+                  onClick={handleCloseMovie}
+                  className="btn-back">
                   ⬅
                 </Button>
               </div>
               <img
-                src={movieDetails.Poster !== "N/A" ? movieDetails.Poster : "/fallback-image.jpg"}
+                src={
+                  movieDetails.Poster !== "N/A"
+                    ? movieDetails.Poster
+                    : "/fallback-image.jpg"
+                }
                 alt={`${movieDetails.Title || "Movie"} poster`}
                 style={{ width: "100%", paddingTop: "20px" }}
               />
               <h2>{movieDetails.Title || "Unknown Title"}</h2>
               <p>
-                <strong>Released Date:</strong> {movieDetails.Released || "Unknown"}
+                <strong>Released Date:</strong>{" "}
+                {movieDetails.Released || "Unknown"}
               </p>
               <p>
                 <strong>Genre:</strong> {movieDetails.Genre || "Unknown"}
@@ -124,7 +132,7 @@ const MovieDetails = ({ handleWatched }) => {
             <strong>
               <span>⭐️</span> imdbRating:
             </strong>{" "}
-            {movieDetails.imdbRating || "N/A"}
+            {movieDetails.imdbRating}
           </p>
 
           <p>

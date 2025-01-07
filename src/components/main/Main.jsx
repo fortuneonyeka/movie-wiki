@@ -16,7 +16,7 @@ const Main = ({ children }) => {
   const [watched, setWatched] = useState([]);
 
   const avgImdbRating = average(
-    watched.map((movie) => Math.round(movie.rating)) // Ensure all ratings are rounded
+    watched.map((movie) => Math.round(movie.imdbRating)) // Ensure all ratings are rounded
   );
   const avgUserRating = average(
     watched.map((movie) => Math.round(movie.userRating || 0)) // Round user ratings if present
