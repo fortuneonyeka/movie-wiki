@@ -6,12 +6,18 @@ import Loader from "../Loader";
 
 const APIKEY = "339d5330";
 
-const MovieDetails = ({ handleWatched }) => {
+const MovieDetails = ({ handleWatched, watched }) => {
   const { selectedId, setSelectedId } = useMovieContext(); // Access selectedId and setSelectedId from context
   const [movieDetails, setMovieDetails] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [userRating, setUserRating ] = useState("")
+
+  const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId)
+  console.log(isWatched);
+
+  const watchedUserRating = watched.find(movie => movie.imdbID === selectedId)?.userRating
+  
 
   useEffect(() => {
     if (!selectedId) return;
@@ -68,8 +74,10 @@ const MovieDetails = ({ handleWatched }) => {
           : "/fallback-image.jpg",
       runtime: movieDetails.Runtime,
       userRating,
+      
+     
     };
-
+    
     handleWatched(newWatchedMovie);
     handleCloseMovie()
   };
@@ -85,9 +93,7 @@ const MovieDetails = ({ handleWatched }) => {
           <header>
             <div className="details-overview">
               <div className="btns">
-               {userRating > 0 && <Button onClick={onWatched} className="btn-add">
-                  Add to watched
-                </Button>}
+               
 
                 <Button
                   onClick={handleCloseMovie}
@@ -128,7 +134,13 @@ const MovieDetails = ({ handleWatched }) => {
             </p>
           </section>
           <div className="rating">
+            {!isWatched ? 
+            <>
             <StarRating maxRating={10} size={24} onSetRating={setUserRating}/>
+
+            {userRating > 0 && <Button onClick={onWatched} className="btn-add">
+                  Add to watched
+                </Button>}</> : <p style={{color:"yellow"}}>{`You rated this movie: ${watchedUserRating}`} <span>⭐️</span></p>}
           </div>
          
 
