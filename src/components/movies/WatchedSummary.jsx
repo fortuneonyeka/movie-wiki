@@ -1,6 +1,6 @@
 import React from 'react'
 
-const WatchedSummary = ({watched,avgImdbRating,avgUserRating, avgRuntime}) => {
+const WatchedSummary = ({watched,avgImdbRating,avgUserRating, avgRuntime, totalRuntime}) => {
   return (
     <div className="summary">
             <h2>Movies you watched</h2>
@@ -20,6 +20,10 @@ const WatchedSummary = ({watched,avgImdbRating,avgUserRating, avgRuntime}) => {
               <p>
                 <span>⏳</span>
                 <span>{avgRuntime} min</span>
+              </p>
+              <p>
+                <span>⏳</span>
+                <span>{totalRuntime} min</span>
               </p>
             </div>
           </div>
