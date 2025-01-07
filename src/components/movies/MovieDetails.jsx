@@ -11,6 +11,7 @@ const MovieDetails = ({ handleWatched }) => {
   const [movieDetails, setMovieDetails] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [userRating, setUserRating ] = useState("")
 
   useEffect(() => {
     if (!selectedId) return;
@@ -66,6 +67,7 @@ const MovieDetails = ({ handleWatched }) => {
           ? movieDetails.Poster
           : "/fallback-image.jpg",
       runtime: movieDetails.Runtime,
+      userRating,
     };
 
     handleWatched(newWatchedMovie);
@@ -83,9 +85,9 @@ const MovieDetails = ({ handleWatched }) => {
           <header>
             <div className="details-overview">
               <div className="btns">
-                <Button onClick={onWatched} className="btn-add">
+               {userRating > 0 && <Button onClick={onWatched} className="btn-add">
                   Add to watched
-                </Button>
+                </Button>}
 
                 <Button
                   onClick={handleCloseMovie}
@@ -126,14 +128,9 @@ const MovieDetails = ({ handleWatched }) => {
             </p>
           </section>
           <div className="rating">
-            <StarRating maxRating={10} size={24} />
+            <StarRating maxRating={10} size={24} onSetRating={setUserRating}/>
           </div>
-          <p>
-            <strong>
-              <span>⭐️</span> imdbRating:
-            </strong>{" "}
-            {movieDetails.imdbRating}
-          </p>
+         
 
           <p>
             <strong>Runtime:</strong> {movieDetails.Runtime || "Unknown"}

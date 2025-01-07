@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Star = ({handleRating, full, onHoverIn, onHoverOut, color, size}) => {
+const Star = ({onRate, full, onHoverIn, onHoverOut, color, size }) => {
   const starStyle = {
     width: `${size}px`,
     height: `${size}px`,
@@ -11,7 +11,7 @@ const Star = ({handleRating, full, onHoverIn, onHoverOut, color, size}) => {
   return (
     <>
    
-    <span role="button" style={starStyle} onClick={handleRating} onMouseEnter={onHoverIn} onMouseLeave={onHoverOut}>
+    <span role="button" style={starStyle} onClick={onRate} onMouseEnter={onHoverIn} onMouseLeave={onHoverOut}>
 {full? <svg
   xmlns="http://www.w3.org/2000/svg"
   viewBox="0 0 20 20"
