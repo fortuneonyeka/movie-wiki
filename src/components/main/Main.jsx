@@ -57,6 +57,12 @@ const Main = ({ children }) => {
     setWatched(watched => [...watched, parsedMovie]);
   };
 
+  const handleRemoveMovie = (id) => {
+    setWatched((watched) => watched.filter(movie => movie.imdbID !== id)) 
+   
+
+  }
+
   return (
     <main className="main">
       {children}
@@ -76,7 +82,7 @@ const Main = ({ children }) => {
               avgRuntime={avgRuntime}
               totalRuntime={totalRuntime}
             />
-            <WatchedList watched={watched} />
+            <WatchedList watched={watched} handleRemoveMovie={handleRemoveMovie}/>
           </>
         )}
       </RatedMovies>

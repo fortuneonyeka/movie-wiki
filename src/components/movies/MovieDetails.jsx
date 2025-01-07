@@ -53,6 +53,20 @@ const MovieDetails = ({ handleWatched, watched }) => {
   }, [selectedId]);
 
 
+  useEffect(() => {
+    if (movieDetails.Title) {
+      document.title = `Movie | ${movieDetails.Title}`;
+    } else {
+      document.title = "Movies Wiki"; // fallback title if no movie is selected
+    }
+  
+    // Cleanup function to reset title when component unmounts
+    return () => {
+      document.title = "Movies Wiki"; // or your default app title
+    };
+  }, [movieDetails.Title]); 
+
+
 
   if (!movieDetails) return null;
 
@@ -81,6 +95,8 @@ const MovieDetails = ({ handleWatched, watched }) => {
     handleWatched(newWatchedMovie);
     handleCloseMovie()
   };
+
+  
 
   return (
     <div className="details">
