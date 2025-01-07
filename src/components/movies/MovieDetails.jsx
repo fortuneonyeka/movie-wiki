@@ -20,36 +20,58 @@ const MovieDetails = ({ handleWatched, watched }) => {
   
 
   useEffect(() => {
+    // Return early if no selectedId
     if (!selectedId) return;
-
+  
+    // Create AbortController for cleanup
+    const controller = new AbortController();
+  
     const fetchMovieDetails = async () => {
       setLoading(true);
       setError(null);
-
+  
       try {
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${APIKEY}&i=${selectedId}`
+          `http://www.omdbapi.com/?apikey=${APIKEY}&i=${selectedId}`,
+          { signal: controller.signal } // Add signal to fetch request
         );
-
+  
         if (!res.ok) {
           throw new Error("Failed to fetch movie details.");
         }
-
+  
         const data = await res.json();
-
+  
         if (data.Response === "False") {
           throw new Error(data.Error || "Failed to fetch movie details.");
         }
-
-        setMovieDetails(data);
+  
+        // Only update state if the component is still mounted
+        if (!controller.signal.aborted) {
+          setMovieDetails(data);
+        }
       } catch (err) {
-        setError(err.message);
+        // Only set error if it's not an abort error and component is mounted
+        if (err.name !== 'AbortError') {
+          setError(err.message);
+        }
       } finally {
-        setLoading(false);
+        // Only update loading state if component is mounted
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
-
+  
     fetchMovieDetails();
+  
+    // Cleanup function
+    return () => {
+      controller.abort(); // Abort fetch request
+      setMovieDetails({}); // Reset movie details
+      setError(null); // Reset error state
+      setLoading(false); // Reset loading state
+    };
   }, [selectedId]);
 
 
