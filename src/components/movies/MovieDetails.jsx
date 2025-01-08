@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useMovieContext } from "../../MovieContext";
 import Button from "../button/Button";
 import StarRating from "../StarRating";
@@ -88,15 +88,34 @@ const MovieDetails = ({ handleWatched, watched }) => {
     };
   }, [movieDetails.Title]); 
 
+  const handleCloseMovie = useCallback(() => {
+    setSelectedId(null);
+  }, [setSelectedId]);
+
+
+  useEffect(() => {
+    const callBackFunction = (e) => {
+      if(e.code === "Escape") {
+        handleCloseMovie()
+        console.log("closing");
+        
+      }
+    }
+    document.addEventListener("keydown",callBackFunction)
+    return () => {
+      document.removeEventListener("keydown", callBackFunction)
+    }
+  },[handleCloseMovie])
+
 
 
   if (!movieDetails) return null;
 
 
 
-  const handleCloseMovie = () => {
-    setSelectedId(null)
-  }
+ 
+
+  
 
   const onWatched = () => {
     const newWatchedMovie = {

@@ -61,6 +61,9 @@ const AppContent = () => {
     };
   }, [query, setMovies]);
 
+
+ 
+
   return (
     <>
       <NavBar>
