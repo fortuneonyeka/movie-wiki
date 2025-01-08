@@ -1,8 +1,12 @@
 import React from 'react'
+import Button from '../button/Button';
 
-const WatchedList = ({watched}) => {
+const WatchedList = ({watched, handleRemoveMovie}) => {
+
+  
   return (
-    <ul className="list list-movies">
+
+    <ul className="list list-movies" >
             {watched.map((movie) => (
               <li key={movie.imdbID}>
                 <img src={movie.Poster} alt={`${movie.Title} poster`} />
@@ -20,6 +24,7 @@ const WatchedList = ({watched}) => {
                     <span>⏳</span>
                     <span>{movie.runtime} min</span>
                   </p>
+                <button className='btn-delete'  onClick={() => handleRemoveMovie(movie.imdbID)}>❌</button>
                 </div>
               </li>
             ))}

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useCallback, useContext, useState } from "react";
 
 // Create context
 const MovieContext = createContext();
@@ -11,8 +11,12 @@ export const MovieProvider = ({ children }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [movies, setMovies] = useState([]);
 
+  const handleCloseMovie = useCallback(() => {
+    setSelectedId(null);
+  }, []);
+
   return (
-    <MovieContext.Provider value={{ selectedId, setSelectedId, movies, setMovies }}>
+    <MovieContext.Provider value={{ selectedId, setSelectedId, movies, setMovies,handleCloseMovie }}>
       {children}
     </MovieContext.Provider>
   );
