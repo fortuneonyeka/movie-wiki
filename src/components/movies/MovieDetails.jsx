@@ -14,7 +14,6 @@ const MovieDetails = ({ handleWatched, watched }) => {
   const [userRating, setUserRating ] = useState("")
 
   const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId)
-  console.log(isWatched);
 
   const watchedUserRating = watched.find(movie => movie.imdbID === selectedId)?.userRating
   
@@ -97,7 +96,6 @@ const MovieDetails = ({ handleWatched, watched }) => {
     const callBackFunction = (e) => {
       if(e.code === "Escape") {
         handleCloseMovie()
-        console.log("closing");
         
       }
     }

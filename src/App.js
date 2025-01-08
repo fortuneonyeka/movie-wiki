@@ -14,52 +14,52 @@ const AppContent = () => {
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("fast and furious");
 
-  const fetchMovies = async (abortController) => {
-    setError(null);
-    setMovies([]);
-    setLoading(true);
-
-    try {
-      const res = await fetch(
-        `http://www.omdbapi.com/?apikey=${APIKEY}&s=${query}`,
-        { signal: abortController.signal }
-      );
-
-      if (!res.ok) {
-        throw new Error(`Failed to fetch movies: ${res.statusText}`);
-      }
-
-      const data = await res.json();
-
-      if (!data.Search) {
-        throw new Error("No movies found.");
-      }
-
-      setMovies(data.Search);
-    } catch (error) {
-      if (error.name !== "AbortError") {
-        setError(error.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchMovies = async (abortController) => {
+      setError(null);
+      setMovies([]);
+      setLoading(true);
+  
+      try {
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${APIKEY}&s=${query}`,
+          { signal: abortController.signal }
+        );
+  
+        if (!res.ok) {
+          throw new Error(`Failed to fetch movies: ${res.statusText}`);
+      }
+  
+        const data = await res.json();
+  
+        if (!data.Search) {
+          throw new Error("No movies found.");
+        }
+  
+        setMovies(data.Search);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          setError(error.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+  
     if (query.length < 3) {
       setError(null);
       setMovies([]);
       setLoading(false);
       return;
     }
-
+  
     const abortController = new AbortController();
     fetchMovies(abortController);
-
+  
     return () => {
       abortController.abort();
     };
-  }, [query, setMovies]);
+  }, [query, setError, setMovies, setLoading]);
 
 
  
