@@ -9,10 +9,10 @@ import { MovieProvider, useMovieContext } from "./MovieContext";
 const APIKEY = "339d5330";
 
 const AppContent = () => {
-  const { movies, setMovies } = useMovieContext(); // Use context for movies
+  const { movies, setMovies, handleCloseMovie } = useMovieContext(); // Use context for movies
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [query, setQuery] = useState("fast and furious");
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const fetchMovies = async (abortController) => {
@@ -54,6 +54,7 @@ const AppContent = () => {
     }
   
     const abortController = new AbortController();
+    handleCloseMovie()
     fetchMovies(abortController);
   
     return () => {

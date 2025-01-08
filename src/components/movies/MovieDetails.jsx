@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMovieContext } from "../../MovieContext";
 import Button from "../button/Button";
 import StarRating from "../StarRating";
@@ -7,113 +7,89 @@ import Loader from "../Loader";
 const APIKEY = "339d5330";
 
 const MovieDetails = ({ handleWatched, watched }) => {
-  const { selectedId, setSelectedId } = useMovieContext(); // Access selectedId and setSelectedId from context
+  const { selectedId, handleCloseMovie } = useMovieContext(); // Access handleCloseMovie from context
   const [movieDetails, setMovieDetails] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [userRating, setUserRating ] = useState("")
+  const [userRating, setUserRating] = useState("");
 
-  const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId)
-
-  const watchedUserRating = watched.find(movie => movie.imdbID === selectedId)?.userRating
-  
+  const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
+  const watchedUserRating = watched.find(
+    (movie) => movie.imdbID === selectedId
+  )?.userRating;
 
   useEffect(() => {
-    // Return early if no selectedId
     if (!selectedId) return;
-  
-    // Create AbortController for cleanup
+
     const controller = new AbortController();
-  
+
     const fetchMovieDetails = async () => {
       setLoading(true);
       setError(null);
-  
+
       try {
         const res = await fetch(
           `http://www.omdbapi.com/?apikey=${APIKEY}&i=${selectedId}`,
-          { signal: controller.signal } // Add signal to fetch request
+          { signal: controller.signal }
         );
-  
+
         if (!res.ok) {
           throw new Error("Failed to fetch movie details.");
         }
-  
+
         const data = await res.json();
-  
+
         if (data.Response === "False") {
           throw new Error(data.Error || "Failed to fetch movie details.");
         }
-  
-        // Only update state if the component is still mounted
+
         if (!controller.signal.aborted) {
           setMovieDetails(data);
         }
       } catch (err) {
-        // Only set error if it's not an abort error and component is mounted
-        if (err.name !== 'AbortError') {
+        if (err.name !== "AbortError") {
           setError(err.message);
         }
       } finally {
-        // Only update loading state if component is mounted
         if (!controller.signal.aborted) {
           setLoading(false);
         }
       }
     };
-  
+
     fetchMovieDetails();
-  
-    // Cleanup function
+
     return () => {
-      controller.abort(); // Abort fetch request
-      setMovieDetails({}); // Reset movie details
-      setError(null); // Reset error state
-      setLoading(false); // Reset loading state
+      controller.abort();
+      setMovieDetails({});
+      setError(null);
+      setLoading(false);
     };
   }, [selectedId]);
-
 
   useEffect(() => {
     if (movieDetails.Title) {
       document.title = `Movie | ${movieDetails.Title}`;
     } else {
-      document.title = "Movies Wiki"; // fallback title if no movie is selected
+      document.title = "Movies Wiki";
     }
-  
-    // Cleanup function to reset title when component unmounts
+
     return () => {
-      document.title = "Movies Wiki"; // or your default app title
+      document.title = "Movies Wiki";
     };
-  }, [movieDetails.Title]); 
-
-  const handleCloseMovie = useCallback(() => {
-    setSelectedId(null);
-  }, [setSelectedId]);
-
+  }, [movieDetails.Title]);
 
   useEffect(() => {
     const callBackFunction = (e) => {
-      if(e.code === "Escape") {
-        handleCloseMovie()
-        
+      if (e.code === "Escape") {
+        handleCloseMovie();
       }
-    }
-    document.addEventListener("keydown",callBackFunction)
+    };
+    document.addEventListener("keydown", callBackFunction);
     return () => {
-      document.removeEventListener("keydown", callBackFunction)
-    }
-  },[handleCloseMovie])
-
-
-
-  if (!movieDetails) return null;
-
-
-
- 
-
-  
+      document.removeEventListener("keydown", callBackFunction);
+    };
+  }, [handleCloseMovie]);
 
   const onWatched = () => {
     const newWatchedMovie = {
@@ -127,15 +103,13 @@ const MovieDetails = ({ handleWatched, watched }) => {
           : "/fallback-image.jpg",
       runtime: movieDetails.Runtime,
       userRating,
-      
-     
     };
-    
+
     handleWatched(newWatchedMovie);
-    handleCloseMovie()
+    handleCloseMovie();
   };
 
-  
+  if (!movieDetails) return null;
 
   return (
     <div className="details">
@@ -148,11 +122,7 @@ const MovieDetails = ({ handleWatched, watched }) => {
           <header>
             <div className="details-overview">
               <div className="btns">
-               
-
-                <Button
-                  onClick={handleCloseMovie}
-                  className="btn-back">
+                <Button onClick={handleCloseMovie} className="btn-back">
                   ⬅
                 </Button>
               </div>
@@ -189,15 +159,22 @@ const MovieDetails = ({ handleWatched, watched }) => {
             </p>
           </section>
           <div className="rating">
-            {!isWatched ? 
-            <>
-            <StarRating maxRating={10} size={24} onSetRating={setUserRating}/>
+            {!isWatched ? (
+              <>
+                <StarRating maxRating={10} size={24} onSetRating={setUserRating} />
 
-            {userRating > 0 && <Button onClick={onWatched} className="btn-add">
-                  Add to watched
-                </Button>}</> : <p style={{color:"yellow"}}>{`You rated this movie: ${watchedUserRating}`} <span>⭐️</span></p>}
+                {userRating > 0 && (
+                  <Button onClick={onWatched} className="btn-add">
+                    Add to watched
+                  </Button>
+                )}
+              </>
+            ) : (
+              <p style={{ color: "yellow" }}>
+                {`You rated this movie: ${watchedUserRating}`} <span>⭐️</span>
+              </p>
+            )}
           </div>
-         
 
           <p>
             <strong>Runtime:</strong> {movieDetails.Runtime || "Unknown"}
