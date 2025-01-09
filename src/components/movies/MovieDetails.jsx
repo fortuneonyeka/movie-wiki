@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useMovieContext } from "../../MovieContext";
 import Button from "../button/Button";
 import StarRating from "../StarRating";
@@ -12,6 +12,12 @@ const MovieDetails = ({ handleWatched, watched }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [userRating, setUserRating] = useState("");
+
+  const countRef = useRef(0)
+
+  useEffect(() => {
+    if(userRating) countRef.current = countRef.current + 1
+  },[userRating])
 
   const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
   const watchedUserRating = watched.find(
@@ -103,6 +109,7 @@ const MovieDetails = ({ handleWatched, watched }) => {
           : "/fallback-image.jpg",
       runtime: movieDetails.Runtime,
       userRating,
+      countRatingDecision: countRef.current,
     };
 
     handleWatched(newWatchedMovie);
