@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RatedMovies from "../movies/RatedMovies";
 import WatchedSummary from "../movies/WatchedSummary";
 import WatchedList from "../movies/WatchedList";
@@ -40,7 +40,11 @@ const calculateTotalRuntime = (movies) => {
 
 const Main = ({ children }) => {
   const { selectedId } = useMovieContext();
-  const [watched, setWatched] = useState([]);
+  // const [watched, setWatched] = useState([]);
+  const [watched, setWatched] = useState(() => {
+    const storedWatched = localStorage.getItem("watched")
+    return JSON.parse(storedWatched)
+  });
 
   // Calculate statistics
   const avgImdbRating = calculateAverage(watched, 'imdbRating');
@@ -55,13 +59,19 @@ const Main = ({ children }) => {
       runtime: parseRuntime(movie.runtime)
     };
     setWatched(watched => [...watched, parsedMovie]);
+    // localStorage.setItem("watched", JSON.stringify([...watched, movie]))
   };
+
 
   const handleRemoveMovie = (id) => {
     setWatched((watched) => watched.filter(movie => movie.imdbID !== id)) 
-   
+   }
 
-  }
+
+   useEffect(() => {
+        localStorage.setItem("watched", JSON.stringify(watched))
+
+   },[watched])
 
   return (
     <main className="main">
