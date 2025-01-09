@@ -1,6 +1,4 @@
-import React, { useState } from "react";
 import "./navBar.css";
-import Search from "./Search";
 import Logo from "./Logo";
 
 const NavBar = ({ children }) => {

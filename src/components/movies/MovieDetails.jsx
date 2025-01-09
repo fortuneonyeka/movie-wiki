@@ -161,7 +161,11 @@ const MovieDetails = ({ handleWatched, watched }) => {
           <div className="rating">
             {!isWatched ? (
               <>
-                <StarRating maxRating={10} size={24} onSetRating={setUserRating} />
+                <StarRating
+                  maxRating={10}
+                  size={24}
+                  onSetRating={setUserRating}
+                />
 
                 {userRating > 0 && (
                   <Button onClick={onWatched} className="btn-add">

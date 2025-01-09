@@ -16,7 +16,14 @@ export const MovieProvider = ({ children }) => {
   }, []);
 
   return (
-    <MovieContext.Provider value={{ selectedId, setSelectedId, movies, setMovies,handleCloseMovie }}>
+    <MovieContext.Provider
+      value={{
+        selectedId,
+        setSelectedId,
+        movies,
+        setMovies,
+        handleCloseMovie,
+      }}>
       {children}
     </MovieContext.Provider>
   );

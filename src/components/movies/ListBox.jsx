@@ -1,13 +1,11 @@
-import React, { Suspense, useState } from "react";
+import React, { useState } from "react";
 import Button from "../button/Button";
 import "./movies.css";
 import Movie from "./Movie";
 import Loader from "../Loader";
-import { useMovieContext } from "../../MovieContext";
 
 const ListBox = ({ movies, loading, error }) => {
   const [isOpen, setIsOpen] = useState(true);
-
 
   return (
     <div className="box">
@@ -39,7 +37,6 @@ const ListBox = ({ movies, loading, error }) => {
 };
 
 export default ListBox;
-
 
 // const ListBox = ({ movies, loading, error }) => {
 //   const { setSelectedId } = useMovieContext(); // Access setSelectedId from context
