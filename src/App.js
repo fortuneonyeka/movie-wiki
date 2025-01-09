@@ -60,7 +60,7 @@ const AppContent = () => {
     return () => {
       abortController.abort();
     };
-  }, [query, setError, setMovies, setLoading]);
+  }, [query, setError, setMovies, setLoading, handleCloseMovie]);
 
 
  
