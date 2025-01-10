@@ -4,15 +4,15 @@ import Main from "./components/main/Main";
 import NumResult from "./components/navigation/NumResult";
 import ListBox from "./components/movies/ListBox";
 import Search from "./components/navigation/Search";
-import { MovieProvider, useMovieContext } from "./MovieContext";
+import { MovieProvider, useMovieContext } from "./context/MovieContext";
 
 const APIKEY = "339d5330";
 
 const AppContent = () => {
-  const { movies, setMovies, handleCloseMovie } = useMovieContext(); // Use context for movies
+  const { movies, setMovies, handleCloseMovie,query, setQuery } = useMovieContext(); // Use context for movies
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [query, setQuery] = useState("");
+  
 
   useEffect(() => {
     const fetchMovies = async (abortController) => {

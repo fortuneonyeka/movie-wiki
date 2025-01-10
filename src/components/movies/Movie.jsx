@@ -1,5 +1,5 @@
 import React from "react";
-import { useMovieContext } from "../../MovieContext";
+import { useMovieContext } from "../../context/MovieContext";
 
 const Movie = ({ movie }) => {
   const { setSelectedId } = useMovieContext(); // Access setSelectedId from context

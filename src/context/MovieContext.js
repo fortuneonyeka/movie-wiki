@@ -10,6 +10,7 @@ export const useMovieContext = () => useContext(MovieContext);
 export const MovieProvider = ({ children }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [movies, setMovies] = useState([]);
+  const [query, setQuery] = useState("");
 
   const handleCloseMovie = useCallback(() => {
     setSelectedId(null);
@@ -23,6 +24,8 @@ export const MovieProvider = ({ children }) => {
         movies,
         setMovies,
         handleCloseMovie,
+        query, 
+        setQuery
       }}>
       {children}
     </MovieContext.Provider>

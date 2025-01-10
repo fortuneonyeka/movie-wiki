@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
 import RatedMovies from "../movies/RatedMovies";
 import WatchedSummary from "../movies/WatchedSummary";
 import WatchedList from "../movies/WatchedList";
 import MovieDetails from "../movies/MovieDetails";
-import { useMovieContext } from "../../MovieContext";
-import { useLocalStorageStage } from "../../useLocalStorageState";
+import { useMovieContext } from "../../context/MovieContext";
+import { useLocalStorageStage } from "../../context/useLocalStorageState";
 
 // Utility function to convert runtime string to minutes
 const parseRuntime = (runtime) => {
@@ -47,9 +46,8 @@ const Main = ({ children }) => {
   const { selectedId } = useMovieContext();
   // const [watched, setWatched] = useState([]);
 
-  const [watched, setWatched] = useLocalStorageStage([],"watched")
+  const [watched, setWatched] = useLocalStorageStage([], "watched");
 
-  
   // Calculate statistics
   const avgImdbRating = calculateAverage(watched, "imdbRating");
   const avgUserRating = calculateAverage(watched, "userRating");
@@ -70,7 +68,7 @@ const Main = ({ children }) => {
   };
 
   // Saved watched list in the localStorage
-  
+
   return (
     <main className="main">
       {children}

@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useMovieContext } from "../../MovieContext";
+import { useMovieContext } from "../../context/MovieContext";
 import Button from "../button/Button";
 import StarRating from "../StarRating";
 import Loader from "../Loader";
-import { useKeyEscape } from "../../useKeyEscape";
+import { useKeyEvents } from "../../context/useKeyEvents";
 
 const APIKEY = "339d5330";
 
@@ -14,11 +14,11 @@ const MovieDetails = ({ handleWatched, watched }) => {
   const [error, setError] = useState(null);
   const [userRating, setUserRating] = useState("");
 
-  const countRef = useRef(0)
+  const countRef = useRef(0);
 
   useEffect(() => {
-    if(userRating) countRef.current = countRef.current + 1
-  },[userRating])
+    if (userRating) countRef.current = countRef.current + 1;
+  }, [userRating]);
 
   const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
   const watchedUserRating = watched.find(
@@ -74,8 +74,6 @@ const MovieDetails = ({ handleWatched, watched }) => {
     };
   }, [selectedId]);
 
-
-
   useEffect(() => {
     if (movieDetails.Title) {
       document.title = `Movie | ${movieDetails.Title}`;
@@ -88,8 +86,23 @@ const MovieDetails = ({ handleWatched, watched }) => {
     };
   }, [movieDetails.Title]);
 
-// custom hook for  escape key functionality
-  useKeyEscape()
+  // useEffect(() => {
+  //   const callBackFunction = (e) => {
+  //     if (e.code === "Escape") {
+  //       handleCloseMovie();
+  //     }
+  //   };
+  //   document.addEventListener("keydown", callBackFunction);
+  //   return () => {
+  //     document.removeEventListener("keydown", callBackFunction);
+  //   };
+  // }, [handleCloseMovie]);
+
+  useKeyEvents({
+    onEscape: () => {
+      handleCloseMovie();
+    },
+  });
 
   const onWatched = () => {
     const newWatchedMovie = {

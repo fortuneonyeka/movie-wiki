@@ -1,9 +1,16 @@
-import React from "react";
-import { useKeyEnter } from "../../useKeyEnter";
+import PropTypes from "prop-types";
+import { useKeyEvents } from "../../context/useKeyEvents";
+import { useMovieContext } from "../../context/MovieContext";
 
 const Search = ({ query, setQuery }) => {
-  // Pass setQuery to the custom hook and get the inputEl ref
-  const inputEl = useKeyEnter(setQuery);
+  const { handleCloseMovie } = useMovieContext();
+
+  const inputRef = useKeyEvents({
+    onEnter: () => {
+      setQuery("");
+      handleCloseMovie();
+    },
+  });
 
   return (
     <input
@@ -12,9 +19,15 @@ const Search = ({ query, setQuery }) => {
       placeholder="Search movies..."
       value={query}
       onChange={(e) => setQuery(e.target.value)}
-      ref={inputEl} // Attach the ref to the input element
+      ref={inputRef}
+      aria-label="Search movies" // Accessibility enhancement
     />
   );
+};
+
+Search.propTypes = {
+  query: PropTypes.string.isRequired,
+  setQuery: PropTypes.func.isRequired,
 };
 
 export default Search;
