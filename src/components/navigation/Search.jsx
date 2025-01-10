@@ -1,22 +1,10 @@
-import { useEffect, useRef } from "react";
+import React from "react";
+import { useKeyEnter } from "../../useKeyEnter";
 
 const Search = ({ query, setQuery }) => {
-  // create a ref element to focus on the input when the component mounts
-  const inputEl = useRef(null);
+  // Pass setQuery to the custom hook and get the inputEl ref
+  const inputEl = useKeyEnter(setQuery);
 
-  useEffect(() => {
-    const callBack = (e) => {
-      if (document.activeElement === inputEl.current) return;
-
-      if (e.code === "Enter") {
-        inputEl.current.focus();
-        setQuery("");
-      }
-    };
-
-    document.addEventListener("keydown", callBack);
-    return document.addEventListener("keydown", callBack);
-  }, [setQuery]);
   return (
     <input
       className="search"
@@ -24,7 +12,7 @@ const Search = ({ query, setQuery }) => {
       placeholder="Search movies..."
       value={query}
       onChange={(e) => setQuery(e.target.value)}
-      ref={inputEl}
+      ref={inputEl} // Attach the ref to the input element
     />
   );
 };

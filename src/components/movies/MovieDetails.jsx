@@ -3,6 +3,7 @@ import { useMovieContext } from "../../MovieContext";
 import Button from "../button/Button";
 import StarRating from "../StarRating";
 import Loader from "../Loader";
+import { useKeyEscape } from "../../useKeyEscape";
 
 const APIKEY = "339d5330";
 
@@ -73,6 +74,8 @@ const MovieDetails = ({ handleWatched, watched }) => {
     };
   }, [selectedId]);
 
+
+
   useEffect(() => {
     if (movieDetails.Title) {
       document.title = `Movie | ${movieDetails.Title}`;
@@ -85,17 +88,8 @@ const MovieDetails = ({ handleWatched, watched }) => {
     };
   }, [movieDetails.Title]);
 
-  useEffect(() => {
-    const callBackFunction = (e) => {
-      if (e.code === "Escape") {
-        handleCloseMovie();
-      }
-    };
-    document.addEventListener("keydown", callBackFunction);
-    return () => {
-      document.removeEventListener("keydown", callBackFunction);
-    };
-  }, [handleCloseMovie]);
+// custom hook for  escape key functionality
+  useKeyEscape()
 
   const onWatched = () => {
     const newWatchedMovie = {
