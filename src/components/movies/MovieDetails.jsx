@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useMovieContext } from "../../MovieContext";
+import React, { useEffect, useRef, useState } from "react";
+import { useMovieContext } from "../../context/MovieContext";
 import Button from "../button/Button";
 import StarRating from "../StarRating";
 import Loader from "../Loader";
+import { useKeyEvents } from "../../context/useKeyEvents";
 
 const APIKEY = "339d5330";
 
@@ -12,6 +13,12 @@ const MovieDetails = ({ handleWatched, watched }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [userRating, setUserRating] = useState("");
+
+  const countRef = useRef(0);
+
+  useEffect(() => {
+    if (userRating) countRef.current = countRef.current + 1;
+  }, [userRating]);
 
   const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
   const watchedUserRating = watched.find(
@@ -79,17 +86,23 @@ const MovieDetails = ({ handleWatched, watched }) => {
     };
   }, [movieDetails.Title]);
 
-  useEffect(() => {
-    const callBackFunction = (e) => {
-      if (e.code === "Escape") {
-        handleCloseMovie();
-      }
-    };
-    document.addEventListener("keydown", callBackFunction);
-    return () => {
-      document.removeEventListener("keydown", callBackFunction);
-    };
-  }, [handleCloseMovie]);
+  // useEffect(() => {
+  //   const callBackFunction = (e) => {
+  //     if (e.code === "Escape") {
+  //       handleCloseMovie();
+  //     }
+  //   };
+  //   document.addEventListener("keydown", callBackFunction);
+  //   return () => {
+  //     document.removeEventListener("keydown", callBackFunction);
+  //   };
+  // }, [handleCloseMovie]);
+
+  useKeyEvents({
+    onEscape: () => {
+      handleCloseMovie();
+    },
+  });
 
   const onWatched = () => {
     const newWatchedMovie = {
@@ -103,6 +116,7 @@ const MovieDetails = ({ handleWatched, watched }) => {
           : "/fallback-image.jpg",
       runtime: movieDetails.Runtime,
       userRating,
+      countRatingDecision: countRef.current,
     };
 
     handleWatched(newWatchedMovie);
@@ -161,7 +175,11 @@ const MovieDetails = ({ handleWatched, watched }) => {
           <div className="rating">
             {!isWatched ? (
               <>
-                <StarRating maxRating={10} size={24} onSetRating={setUserRating} />
+                <StarRating
+                  maxRating={10}
+                  size={24}
+                  onSetRating={setUserRating}
+                />
 
                 {userRating > 0 && (
                   <Button onClick={onWatched} className="btn-add">

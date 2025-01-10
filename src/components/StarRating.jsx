@@ -48,17 +48,6 @@ const StarRating = ({
     <div style={containerStyle} className={className}>
       <div style={starContainerStyle}>
         {Array.from({ length: maxRating }, (_, i) => (
-          // <Star
-          //   key={i}
-          //   handleRating={() => setRating(i + 1)}
-          //   full={tempRating ? tempRating >= i + 1 : rating >= i + 1}
-          //   onHoverIn={() => setTempRating(i + 1)}
-          //   onHoverOut={() => setTempRating(0)}
-          //   color={getDynamicColor(tempRating || rating)}
-          //   size={size}
-          // />
-
-
           <Star
             key={i}
             full={tempRating ? tempRating >= i + 1 : rating >= i + 1}

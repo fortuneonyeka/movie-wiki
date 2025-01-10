@@ -1,16 +1,17 @@
 .box {
-  width: 52rem;
-  max-width:52rem;
+  width: 100%;
+  max-width: 52rem;
   background-color: var(--color-background-500);
   border-radius: 0.9rem;
-  overflow: scroll;
+  overflow: hidden; /* Prevent unwanted scrollbars */
   position: relative;
 }
 
 .list {
   list-style: none;
   padding: 0.8rem 0;
-  overflow: scroll;
+  overflow-y: auto; /* Vertical scrolling only */
+  max-height: 60vh; /* Limit height for better usability on smaller screens */
 }
 
 .list-watched {
@@ -25,8 +26,7 @@
   column-gap: 2.4rem;
   font-size: 1.6rem;
   align-items: center;
-
-  padding: 1.6rem 3.2rem;
+  padding: 1.6rem 2rem; /* Reduced padding for smaller screens */
   border-bottom: 1px solid var(--color-background-100);
 }
 
@@ -61,7 +61,7 @@
 }
 
 .summary {
-  padding: 2.2rem 3.2rem 1.8rem 3.2rem;
+  padding: 2.2rem 2rem; /* Reduced padding for smaller screens */
   border-radius: 0.9rem;
   background-color: var(--color-background-100);
   box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.2);
@@ -76,7 +76,7 @@
 .summary div {
   display: flex;
   align-items: center;
-  gap: 2.4rem;
+  gap: 2rem; /* Reduced gap for smaller screens */
   font-size: 1.6rem;
   font-weight: 600;
 }
@@ -85,4 +85,58 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .box {
+    padding: 1rem;
+  }
+
+  .list li {
+    grid-template-columns: 3rem 1fr;
+    column-gap: 1.6rem;
+    padding: 1.2rem 1.6rem;
+  }
+
+  .list h3 {
+    font-size: 1.6rem;
+  }
+
+  .list div {
+    gap: 1.6rem;
+  }
+
+  .summary {
+    padding: 1.6rem 1.2rem;
+  }
+
+  .summary div {
+    gap: 1.6rem;
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .list li {
+    grid-template-columns: 2.5rem 1fr;
+    padding: 1rem 1.2rem;
+  }
+
+  .list h3 {
+    font-size: 1.4rem;
+  }
+
+  .summary {
+    padding: 1.2rem;
+  }
+
+  .summary h2 {
+    font-size: 1.4rem;
+  }
+
+  .summary div {
+    font-size: 1.2rem;
+    gap: 1.2rem;
+  }
 }

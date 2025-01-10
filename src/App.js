@@ -4,38 +4,38 @@ import Main from "./components/main/Main";
 import NumResult from "./components/navigation/NumResult";
 import ListBox from "./components/movies/ListBox";
 import Search from "./components/navigation/Search";
-import { MovieProvider, useMovieContext } from "./MovieContext";
+import { MovieProvider, useMovieContext } from "./context/MovieContext";
 
 const APIKEY = "339d5330";
 
 const AppContent = () => {
-  const { movies, setMovies, handleCloseMovie } = useMovieContext(); // Use context for movies
+  const { movies, setMovies, handleCloseMovie,query, setQuery } = useMovieContext(); // Use context for movies
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [query, setQuery] = useState("");
+  
 
   useEffect(() => {
     const fetchMovies = async (abortController) => {
       setError(null);
       setMovies([]);
       setLoading(true);
-  
+
       try {
         const res = await fetch(
           `http://www.omdbapi.com/?apikey=${APIKEY}&s=${query}`,
           { signal: abortController.signal }
         );
-  
+
         if (!res.ok) {
           throw new Error(`Failed to fetch movies: ${res.statusText}`);
-      }
-  
+        }
+
         const data = await res.json();
-  
+
         if (!data.Search) {
           throw new Error("No movies found.");
         }
-  
+
         setMovies(data.Search);
       } catch (error) {
         if (error.name !== "AbortError") {
@@ -45,25 +45,22 @@ const AppContent = () => {
         setLoading(false);
       }
     };
-  
+
     if (query.length < 3) {
       setError(null);
       setMovies([]);
       setLoading(false);
       return;
     }
-  
+
     const abortController = new AbortController();
-    handleCloseMovie()
+    handleCloseMovie();
     fetchMovies(abortController);
-  
+
     return () => {
       abortController.abort();
     };
-  }, [query, setError, setMovies, setLoading]);
-
-
- 
+  }, [query, setError, setMovies, setLoading, handleCloseMovie]);
 
   return (
     <>

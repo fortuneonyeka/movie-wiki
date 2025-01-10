@@ -1,9 +1,9 @@
-import React, { useState } from "react";
 import RatedMovies from "../movies/RatedMovies";
 import WatchedSummary from "../movies/WatchedSummary";
 import WatchedList from "../movies/WatchedList";
 import MovieDetails from "../movies/MovieDetails";
-import { useMovieContext } from "../../MovieContext";
+import { useMovieContext } from "../../context/MovieContext";
+import { useLocalStorageStage } from "../../context/useLocalStorageState";
 
 // Utility function to convert runtime string to minutes
 const parseRuntime = (runtime) => {
@@ -18,17 +18,21 @@ const parseRuntime = (runtime) => {
 // Improved average function with runtime parsing
 const calculateAverage = (arr, key = null) => {
   if (arr.length === 0) return 0;
-  
-  const validNumbers = arr.map(item => {
-    if (key === 'runtime') {
-      return parseRuntime(item[key]);
-    }
-    return key ? Number(item[key]) || 0 : Number(item) || 0;
-  }).filter(num => !isNaN(num) && num > 0);
 
-  return validNumbers.length === 0 
-    ? 0 
-    : Math.round(validNumbers.reduce((acc, cur) => acc + cur, 0) / validNumbers.length);
+  const validNumbers = arr
+    .map((item) => {
+      if (key === "runtime") {
+        return parseRuntime(item[key]);
+      }
+      return key ? Number(item[key]) || 0 : Number(item) || 0;
+    })
+    .filter((num) => !isNaN(num) && num > 0);
+
+  return validNumbers.length === 0
+    ? 0
+    : Math.round(
+        validNumbers.reduce((acc, cur) => acc + cur, 0) / validNumbers.length
+      );
 };
 
 // Calculate total runtime with proper parsing
@@ -40,28 +44,30 @@ const calculateTotalRuntime = (movies) => {
 
 const Main = ({ children }) => {
   const { selectedId } = useMovieContext();
-  const [watched, setWatched] = useState([]);
+  // const [watched, setWatched] = useState([]);
+
+  const [watched, setWatched] = useLocalStorageStage([], "watched");
 
   // Calculate statistics
-  const avgImdbRating = calculateAverage(watched, 'imdbRating');
-  const avgUserRating = calculateAverage(watched, 'userRating');
-  const avgRuntime = calculateAverage(watched, 'runtime');
+  const avgImdbRating = calculateAverage(watched, "imdbRating");
+  const avgUserRating = calculateAverage(watched, "userRating");
+  const avgRuntime = calculateAverage(watched, "runtime");
   const totalRuntime = calculateTotalRuntime(watched);
 
   const handleWatched = (movie) => {
     // Ensure runtime is parsed before adding to watched list
     const parsedMovie = {
       ...movie,
-      runtime: parseRuntime(movie.runtime)
+      runtime: parseRuntime(movie.runtime),
     };
-    setWatched(watched => [...watched, parsedMovie]);
+    setWatched((watched) => [...watched, parsedMovie]);
   };
 
   const handleRemoveMovie = (id) => {
-    setWatched((watched) => watched.filter(movie => movie.imdbID !== id)) 
-   
+    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
+  };
 
-  }
+  // Saved watched list in the localStorage
 
   return (
     <main className="main">
@@ -69,10 +75,7 @@ const Main = ({ children }) => {
 
       <RatedMovies>
         {selectedId ? (
-          <MovieDetails 
-            handleWatched={handleWatched} 
-            watched={watched}
-          />
+          <MovieDetails handleWatched={handleWatched} watched={watched} />
         ) : (
           <>
             <WatchedSummary
@@ -82,7 +85,10 @@ const Main = ({ children }) => {
               avgRuntime={avgRuntime}
               totalRuntime={totalRuntime}
             />
-            <WatchedList watched={watched} handleRemoveMovie={handleRemoveMovie}/>
+            <WatchedList
+              watched={watched}
+              handleRemoveMovie={handleRemoveMovie}
+            />
           </>
         )}
       </RatedMovies>
